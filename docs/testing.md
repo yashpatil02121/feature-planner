@@ -68,7 +68,7 @@ claude plugin eval . --scaffold --allow-tools Write Edit --trust-plugin
   - `-j 4` runs cases in parallel;
   - `--json <file>` writes machine-readable results.
 
-**Cost.** One run costs about $0.10–0.25 on the default model. The full suite is 9 cases × 3 runs × 2 arms (with-plugin and the no-plugin baseline) ≈ $8–12. Use `--runs 1 --ablation none` while iterating on the skill.
+**Cost.** One run costs about $0.10–0.25 on the default model. The full suite is 9 cases × 3 runs × 2 arms (with-plugin and the no-plugin baseline). The last full run cost $8.06 and took about 8 minutes. Its results are in [architecture.md](architecture.md#baseline-comparison-v100-work). Use `--runs 1 --ablation none` while iterating on the skill.
 
 Results are written to `evals/results/` (gitignored).
 

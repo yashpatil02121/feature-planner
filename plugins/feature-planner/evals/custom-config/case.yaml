@@ -25,3 +25,9 @@ graders:
       PASS only if the plan written with the Write tool does not include test-writing tasks or
       per-task "Tests" requirements (generateTests is false in .feature-planner.json). A brief note
       that tests were omitted by configuration is acceptable.
+  - name: plan-length
+    type: regex
+    target: trace
+    # Fails if the saved plan has more than 90 lines (counts \n in the Write content).
+    pattern: '"name"\s*:\s*"Write".*?"content"\s*:\s*"(?:[^"\\]|\\[^n])*(?:\\n(?:[^"\\]|\\[^n])*){90}'
+    match: not_contains

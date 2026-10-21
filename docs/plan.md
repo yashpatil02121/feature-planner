@@ -178,38 +178,19 @@ The interactive approval path still needs a manual check. Document this behavior
 
 ## 6. Plan format
 
-Every plan begins with a status header, followed by the template sections.
+Every plan begins with a status header (`feature`, `status`, `created`, `planner`), followed by one of two templates. The skill picks the template by size. *(Revised for v1.0.0. The original twelve-section template produced 147–189-line plans for small features.)*
+
+| Template | When | Sections | Target |
+| -------- | ---- | -------- | ------ |
+| **Compact** (`plan-compact.md`) | About four files at most, and no migration, auth change, new dependency, or breaking API change | Summary · Context · Changes · Tasks · Risks and open questions | ≤ about 80 lines |
+| **Full** (`implementation-plan.md`) | Everything else | Summary · Requirements · Existing Architecture · Proposed Approach (with out-of-scope) · Files · Tasks · Security, Data, and Compatibility (optional) · Risks, Assumptions, and Open Questions | ≤ about 150 lines |
+
+Both use the same task format:
 
 ```markdown
----
-feature: Password reset
-status: draft            # draft | approved | in-progress | done
-created: 2026-10-22
-planner: feature-planner@0.1.0
----
-
-# Feature: Password reset
-
-## 1. Summary
-## 2. Requirements
-## 3. Existing Architecture
-## 4. Proposed Approach
-## 5. Scope
-### In Scope
-### Out of Scope
-## 6. Files to Create or Modify
-## 7. Implementation Tasks
-### T1 — <title>
-- [ ] Objective
-- Files:
-- Depends on:
-- Acceptance criteria:
-- Tests:
-## 8. Testing Strategy
-## 9. Security and Data Considerations
-## 10. Risks and Assumptions
-## 11. Open Questions
-## 12. Definition of Done
+- [ ] **T1 — <title>** · `src/file.js` (confirmed) · depends on: none
+  - Done when: <criterion>; <criterion>.
+  - Tests: <cases>.
 ```
 
 Rules:
@@ -218,8 +199,8 @@ Rules:
 - Label every file as **confirmed** (exists and was read), **proposed** (new), or **TBD**.
 - Never invent file names for code that was not inspected.
 - Include migrations and rollback steps where relevant, and non-functional requirements (performance, accessibility, observability) when applicable.
-- Keep the plan proportional to the feature. A change touching a few files fits in about 80 lines. Sections that don't apply collapse to "None", and no detail is repeated across sections.
-- Never list the plan file itself under "Files to Create or Modify".
+- Keep the plan proportional to the feature, and say each fact once. Sections that don't apply are left out. Eval graders enforce at most 90 lines for compact and 160 for full.
+- Never list the plan file itself among the files to change.
 - Task checkboxes and the `status` field let a future implementation workflow track progress without a separate state store.
 - Approval is a human action: the developer edits `status: draft` to `status: approved`.
 
@@ -354,7 +335,7 @@ Scaffold with `claude plugin eval init`, then create one case per scenario:
 
 **Done when:** the suite runs locally with `claude plugin eval` and its results are recorded in `docs/testing.md`.
 
-**Status:** done (2026-10-22). 9 cases, 9/9 passing at 1 run per case. The no-plugin baseline comparison has not been run yet.
+**Status:** done (2026-10-22). 9 cases, 9/9 passing at 1 run per case. The full baseline run (3 runs per case, with and without the plugin) passed 27/27 with a +0.44 mean delta.
 
 ### Phase 7 — CI and repository quality (2–3 h)
 
@@ -403,7 +384,10 @@ Release sequence:
 - Added CONTRIBUTING, SECURITY (with the security model), CHANGELOG, `docs/configuration.md`, and issue templates.
 - The examples are generated from the eval fixtures rather than from real open-source repositories, so they are reproducible from this repository.
 - Clean marketplace install, update, and uninstall were verified from GitHub.
-- **Still open before v1.0.0:** a baseline comparison run, the manual plan-mode approval check, plan length (examples run 147–189 lines), and an optional plugin icon.
+- **v1.0.0 progress:**
+  - Plan length: **done**. Compact and full templates, and the examples are now 47–89 lines.
+  - Baseline comparison: **done**. 27/27 with the plugin, mean delta +0.44 over plain Claude; see [architecture.md](architecture.md).
+  - **Still open:** the manual plan-mode approval check, and an optional plugin icon.
 
 ## 10. Security and reliability requirements
 

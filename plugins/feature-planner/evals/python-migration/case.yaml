@@ -63,3 +63,13 @@ graders:
     target: trace
     pattern: '"name"\s*:\s*"Write".*(Django|Flask)'
     match: not_contains
+  - name: plan-length
+    type: regex
+    target: trace
+    # Fails if the saved plan has more than 160 lines (counts \n in the Write content).
+    pattern: '"name"\s*:\s*"Write".*?"content"\s*:\s*"(?:[^"\\]|\\[^n])*(?:\\n(?:[^"\\]|\\[^n])*){160}'
+    match: not_contains
+  - name: full-template
+    type: regex
+    target: trace
+    pattern: '"name"\s*:\s*"Write".*?## \d+\. Implementation Tasks'

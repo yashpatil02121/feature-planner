@@ -18,70 +18,37 @@ planner: feature-planner@0.3.0
 
 ## 3. Existing Architecture
 
-<What the relevant parts of the codebase look like today, citing confirmed files. Note the conventions this feature must follow.>
+<Bullets on the relevant parts of the codebase today, citing confirmed files. End with the conventions this feature must follow and the test command.>
 
 ## 4. Proposed Approach
 
-<How the feature fits into the existing architecture. If there was a real choice, list the alternatives considered and why this one was chosen.>
+<How the feature fits into the existing architecture. If there was a real choice, name the alternative and why this one wins, in two or three lines.>
 
-## 5. Scope
+**Out of scope:** <comma-separated list>
 
-### In Scope
-
-- …
-
-### Out of Scope
-
-- …
-
-## 6. Files to Create or Modify
+## 5. Files to Create or Modify
 
 | File | Status | Change |
 | ---- | ------ | ------ |
 | `path/to/file` | confirmed / proposed / TBD | <What changes> |
 
-## 7. Implementation Tasks
+## 6. Implementation Tasks
 
-### T1 — <Task title>
+- [ ] **T1 — <Title>** · `path/to/file` (confirmed), `path/to/new` (proposed) · depends on: none
+  - Done when: <criterion>; <criterion>; <criterion>.
+  - Tests: <test cases, in one or two lines>.
+- [ ] **T2 — <Title>** · `path/to/other` (confirmed) · depends on: T1
+  - Done when: …
+  - Tests: …
 
-- [ ] **Objective:** <What this task achieves>
-- **Files:** `path/to/file` (confirmed), …
-- **Depends on:** None
-- **Acceptance criteria:**
-  - …
-- **Tests:**
-  - …
+## 7. Security, Data, and Compatibility
 
-### T2 — <Task title>
+<!-- Optional: leave out if nothing applies. Auth checks, validation, sensitive data, migrations and rollback, backward compatibility. Don't repeat task criteria. -->
 
-- [ ] **Objective:** …
-- **Files:** …
-- **Depends on:** T1
-- **Acceptance criteria:**
-  - …
-- **Tests:**
-  - …
+## 8. Risks, Assumptions, and Open Questions
 
-## 8. Testing Strategy
-
-<Test runner and commands used by this project, the unit, integration, and end-to-end coverage this feature needs, and important edge cases.>
-
-## 9. Security and Data Considerations
-
-<Authentication and authorization, input validation, sensitive data, migrations and rollback, backward compatibility. Write "None" if not applicable.>
-
-## 10. Risks and Assumptions
+<!-- Required. -->
 
 - **Assumption:** …
 - **Risk:** … — **Mitigation:** …
-
-## 11. Open Questions
-
-- …
-
-## 12. Definition of Done
-
-- [ ] All tasks complete and their acceptance criteria met
-- [ ] Tests pass using the project's test command
-- [ ] Lint and type checks pass
-- [ ] <Feature-specific criteria>
+- **Question:** …

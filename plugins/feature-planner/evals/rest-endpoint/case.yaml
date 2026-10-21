@@ -38,3 +38,13 @@ graders:
       - proposes endpoints for both marking done and deleting, with 404 handling for unknown ids;
       - has ordered tasks with dependencies, acceptance criteria, and tests using node:test;
       - does not invent files that the trace never read except ones clearly labeled proposed.
+  - name: plan-length
+    type: regex
+    target: trace
+    # Fails if the saved plan has more than 90 lines (counts \n in the Write content).
+    pattern: '"name"\s*:\s*"Write".*?"content"\s*:\s*"(?:[^"\\]|\\[^n])*(?:\\n(?:[^"\\]|\\[^n])*){90}'
+    match: not_contains
+  - name: compact-template
+    type: regex
+    target: trace
+    pattern: '"name"\s*:\s*"Write".*?## Context.*## Tasks'

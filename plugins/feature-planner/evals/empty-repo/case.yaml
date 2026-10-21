@@ -19,3 +19,9 @@ graders:
       PASS only if the response or plan acknowledges that the project is empty, labels all files
       as proposed (none as confirmed), and produces a small bootstrap plan (project layout,
       CLI entry point, CSV→JSON conversion, tests) without claiming to have read existing code.
+  - name: plan-length
+    type: regex
+    target: trace
+    # Fails if the saved plan has more than 90 lines (counts \n in the Write content).
+    pattern: '"name"\s*:\s*"Write".*?"content"\s*:\s*"(?:[^"\\]|\\[^n])*(?:\\n(?:[^"\\]|\\[^n])*){90}'
+    match: not_contains

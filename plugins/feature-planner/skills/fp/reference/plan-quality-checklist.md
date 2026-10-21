@@ -1,6 +1,6 @@
 # Plan quality checklist
 
-Run through this before saving. Fix what you can; record the rest under "Open Questions" or "Risks and Assumptions".
+Run through this before saving. Fix what you can, and record the rest in the plan's risks and open questions section.
 
 ## Grounding
 
@@ -13,7 +13,7 @@ Run through this before saving. Fix what you can; record the rest under "Open Qu
 
 - [ ] Every requirement maps to at least one task and one acceptance criterion.
 - [ ] Error cases and edge cases are covered, not just the happy path.
-- [ ] If `generateTests` is true, every task that changes behavior has tests, and the testing strategy names the project's real test runner.
+- [ ] If `generateTests` is true, every task that changes behavior has tests, and the plan names the project's real test command (in Context or Existing Architecture).
 
 ## Ordering
 
@@ -36,8 +36,9 @@ Run through this before saving. Fix what you can; record the rest under "Open Qu
 
 ## Proportionality
 
-- [ ] The plan's length matches the feature. A change touching a few files fits in about 80 lines.
-- [ ] No detail is repeated across sections. For example, acceptance criteria are not restated in the testing strategy.
+- [ ] The right template was used: compact for small changes (about 80 lines or fewer), full otherwise (about 150 lines or fewer).
+- [ ] No detail is repeated across sections. Requirements are not restated as criteria, and files are not listed twice.
+- [ ] Each task is a header line plus "Done when" and "Tests". No extra sub-bullets.
 - [ ] No speculative work beyond the request. Nice-to-haves go under "Out of Scope".
 
 ## Safety

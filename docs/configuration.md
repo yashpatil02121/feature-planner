@@ -16,7 +16,7 @@ To customize, create `.feature-planner.json` in your project root (the directory
 | Setting | Type | Default | Behavior |
 | ------- | ---- | ------- | -------- |
 | `planDirectory` | string | `"plans"` | Where plans are saved, relative to the project root. It must stay inside the project: no absolute paths, drive letters, or `..` segments. |
-| `generateTests` | boolean | `true` | When `true`, every task that changes behavior lists its tests and the plan includes a testing strategy. When `false`, test tasks are left out. |
+| `generateTests` | boolean | `true` | When `true`, every task that changes behavior lists its tests, and the plan names the project's test command. When `false`, test tasks are left out. |
 
 ## Validation
 

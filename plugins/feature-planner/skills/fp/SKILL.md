@@ -70,23 +70,30 @@ If the repository is empty or has no relevant code, say so and plan a minimal bo
 - Compare alternatives only when there is a real choice, and state the trade-off and your recommendation.
 - Note migrations, backward compatibility, security, and performance where relevant.
 
-### 4. Break down the work
+### 4. Choose the plan size
 
-Write ordered tasks `T1`, `T2`, … Each task has:
+Pick the template that fits the feature. When in doubt, choose **compact**.
 
-- an objective;
-- the files involved, each labeled **confirmed**, **proposed**, or **TBD**;
-- its dependencies (task IDs);
-- acceptance criteria;
-- tests (if `generateTests` is true).
+- **Compact** (`templates/plan-compact.md`, target about 80 lines or fewer): the change touches at most about four files, and needs no schema migration, no auth or permission change, no new dependency, and no breaking change to a public API.
+- **Full** (`templates/implementation-plan.md`, target about 150 lines or fewer): anything else. Go longer only when the feature genuinely needs several phases, and say why in the summary.
 
-Each task should be understandable on its own and small enough to implement and verify in one sitting. Order tasks so that every dependency comes first.
+### 5. Break down the work
 
-### 5. Validate completeness
+Write ordered tasks `T1`, `T2`, … in the format the template shows:
 
-Before saving, run the checklist in `${CLAUDE_SKILL_DIR}/reference/plan-quality-checklist.md`. Fix any gaps it finds, or record them under "Open Questions".
+- **One header line** with the task title, its files (each labeled **confirmed**, **proposed**, or **TBD**), and its dependencies.
+- **"Done when"** with the acceptance criteria. Make them concrete and checkable: status codes, return values, behavior.
+- **"Tests"** with the tests to write, if `generateTests` is true. Merge them into one line where possible.
 
-### 6. Save and report
+Each task should be understandable on its own and small enough to implement and verify in one sitting. Order tasks so that every dependency comes first. Prefer fewer, meaningful tasks over many tiny ones.
+
+Say each fact once. Don't restate requirements as acceptance criteria, repeat acceptance criteria in a testing section, or list files both in a table and again in prose.
+
+### 6. Validate completeness
+
+Before saving, run the checklist in `${CLAUDE_SKILL_DIR}/reference/plan-quality-checklist.md`. Fix any gaps it finds, or record them under the open-questions section.
+
+### 7. Save and report
 
 1. **Build the filename:** `<planDirectory>/<YYYY-MM-DD>-<slug>.md`.
    - Use today's date.
@@ -94,10 +101,11 @@ Before saving, run the checklist in `${CLAUDE_SKILL_DIR}/reference/plan-quality-
 2. **Check for collisions:** use Glob to check whether that path exists.
    - If it exists, ask the user whether to **replace** it or **save as a new version**. A new version gets the next free suffix `-2`, `-3`, ….
    - Never overwrite without the user's explicit answer.
-3. **Write the plan** using the template at `${CLAUDE_SKILL_DIR}/templates/implementation-plan.md`.
+3. **Write the plan** using the template you chose in stage 4, from `${CLAUDE_SKILL_DIR}/templates/`.
    - Fill in the header with `status: draft`, the feature name, today's date, and `planner: feature-planner@0.3.0`.
-   - Keep the plan proportional. A feature touching a few files should fit in about 80 lines. Collapse sections that don't apply to a single "None" line, and don't repeat the same detail in several sections.
-   - Do not list the plan file itself in "Files to Create or Modify".
+   - Stay within the template's line target. Before writing, cut anything that repeats another section, and anything a developer would not miss.
+   - Leave out sections that don't apply rather than writing "None", except where the template marks a section as required.
+   - Do not list the plan file itself among the files to change.
 4. **Report** in under 15 lines:
    - the file path;
    - a one-paragraph summary;

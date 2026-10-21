@@ -32,6 +32,7 @@ required=(
   examples/README.md
   "$PLUGIN/skills/fp/SKILL.md"
   "$PLUGIN/skills/fp/templates/implementation-plan.md"
+  "$PLUGIN/skills/fp/templates/plan-compact.md"
   "$PLUGIN/skills/fp/reference/codebase-inspection.md"
   "$PLUGIN/skills/fp/reference/plan-quality-checklist.md"
 )
@@ -68,7 +69,7 @@ if [[ "$plugin_version" == "$market_version" ]]; then
 else
   fail "plugin.json $plugin_version != marketplace.json $market_version"
 fi
-for f in "$PLUGIN/skills/fp/SKILL.md" "$PLUGIN/skills/fp/templates/implementation-plan.md"; do
+for f in "$PLUGIN/skills/fp/SKILL.md" "$PLUGIN/skills/fp/templates/"*.md; do
   grep -q "feature-planner@$plugin_version" "$f" \
     && echo "ok  $f planner header uses $plugin_version" \
     || fail "$f planner header does not mention feature-planner@$plugin_version"
