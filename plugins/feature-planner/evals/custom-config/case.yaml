@@ -1,0 +1,27 @@
+schema_version: "1.1"
+name: custom-config
+description: A valid config is honored, so the plan goes to docs/plans and contains no test tasks when generateTests is false.
+tags: [core, config]
+runs: 3
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Add the ability to delete a todo
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: plan-in-configured-dir
+    type: file_exists
+    path: docs/plans/*.md
+  - name: nothing-in-default-dir
+    type: file_exists
+    path: plans/**
+    exists: false
+  - name: no-test-tasks
+    type: llm
+    focus: trace
+    criteria: |
+      PASS only if the plan written with the Write tool does not include test-writing tasks or
+      per-task "Tests" requirements (generateTests is false in .feature-planner.json). A brief note
+      that tests were omitted by configuration is acceptable.

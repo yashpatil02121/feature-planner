@@ -71,10 +71,8 @@ A plugin cannot ship a bare `/fp`: plugin `settings.json` honors only `agent` an
 
 **V1 decision:** document `/feature-planner:fp` as the command.
 
-Two cheap follow-ups:
-
-1. **Test during the first session:** add `name: fp` to the skill's frontmatter and check whether the bare `/fp` also resolves when nothing else uses the name. The docs describe this for skills whose `name` field is set, but it is unverified for plugin skills. Promise it only if it works.
-2. **Document an opt-in shortcut:** users who want a bare `/fp` can create a personal skill at `~/.claude/skills/fp/SKILL.md` that forwards to the plugin skill. The README gives the exact file contents. The plugin does not install it automatically.
+- **Verified in Phase 2:** setting `name: fp` does not expose a bare `/fp`. Only `feature-planner:fp` is registered (see [architecture.md](architecture.md)).
+- **Opt-in shortcut:** users who want a bare `/fp` can create a personal skill at `~/.claude/skills/fp/SKILL.md` that forwards to the plugin skill. The README gives the exact file contents. The plugin does not install it automatically.
 
 ## 4. Repository structure
 
@@ -142,14 +140,15 @@ The implementation skill is not part of V1 (see section 8).
 name: fp
 description: Plan a feature before implementing it. Inspects the codebase and writes a structured implementation plan to the plans directory.
 argument-hint: <feature description>
-allowed-tools: Read, Glob, Grep, Write, Bash(git log:*), Bash(git ls-files:*), Bash(git status:*)
+allowed-tools: Read, Glob, Grep, Write
 disallowed-tools: Edit, NotebookEdit, Bash
 ---
 ```
 
-- `allowed-tools` only pre-approves tools; it does not restrict them. The restriction comes from `disallowed-tools`.
-- Check the precedence between the `Bash(git …:*)` allowances and `Bash` in `disallowed-tools` during Phase 2. If disallowing `Bash` removes the git allowances, drop the git commands; planning works without them.
+- `allowed-tools` only pre-approves tools; it does not restrict them. The restriction comes from `disallowed-tools`. Phase 2 verified that it denies `Edit` even under `acceptEdits`.
+- No shell access. Phase 2 showed that disallowing `Bash` also overrides `Bash(git …:*)` allowances, so inspection uses Read, Glob, and Grep only.
 - `Write` stays available for the plan file. The skill instructions restrict it to the plan directory. This is the one remaining instruction-level control, and the docs must say so.
+- Inspection is limited to the current working directory, including when the session has additional working directories configured.
 
 ### Arguments
 
@@ -169,8 +168,13 @@ disallowed-tools: Edit, NotebookEdit, Bash
 
 Users may run `/fp` while Claude Code is in plan mode, where edits are blocked until the plan is approved.
 
-- **Phase 2 test:** check whether writing a new plan file is blocked in plan mode.
-- **If it is blocked:** the skill presents the complete plan in the conversation and tells the user the file will be saved once they leave plan mode, or to run `/fp` again outside plan mode. Document this in the README.
+Phase 2 verified that plan mode blocks writes inside the project. The skill therefore:
+
+1. presents the complete plan through plan mode (the plan-mode plan file and `ExitPlanMode`), stating that approval only saves the plan;
+2. on approval, writes it to `plans/` with `status: draft` and stops, never implementing;
+3. if `ExitPlanMode` is unavailable (headless) or rejected, shows the plan in the conversation with the intended path.
+
+The interactive approval path still needs a manual check. Document this behavior in the README.
 
 ## 6. Plan format
 
@@ -214,7 +218,8 @@ Rules:
 - Label every file as **confirmed** (exists and was read), **proposed** (new), or **TBD**.
 - Never invent file names for code that was not inspected.
 - Include migrations and rollback steps where relevant, and non-functional requirements (performance, accessibility, observability) when applicable.
-- Keep the plan proportional to the feature. A small UI change should not get twelve full sections of filler; empty sections say "None".
+- Keep the plan proportional to the feature. A change touching a few files fits in about 80 lines. Sections that don't apply collapse to "None", and no detail is repeated across sections.
+- Never list the plan file itself under "Files to Create or Modify".
 - Task checkboxes and the `status` field let a future implementation workflow track progress without a separate state store.
 - Approval is a human action: the developer edits `status: draft` to `status: approved`.
 
@@ -272,6 +277,8 @@ Estimates assume one developer and exclude marketplace review delays.
 
 **Done when:** every behavior in sections 5–7 is unambiguous.
 
+**Status:** done (2026-10-22). Sections 3 and 5–6 updated with the Phase 2 findings.
+
 ### Phase 2 — Manifests and skill skeleton (2–3 h)
 
 - Create `marketplace.json` and `plugin.json` with version, description, repository, and license.
@@ -286,6 +293,8 @@ Estimates assume one developer and exclude marketplace review delays.
 
 **Done when:** validation passes, the command runs, and the four findings are recorded in `docs/architecture.md`.
 
+**Status:** done (2026-10-22). The interactive plan-mode approval path is still to be checked by hand.
+
 ### Phase 3 — Core planning workflow (5–7 h)
 
 - Write the six stages, the exclusion rules, and the grounding rules.
@@ -299,12 +308,16 @@ Estimates assume one developer and exclude marketplace review delays.
 - ambiguous requests produce questions or explicit assumptions;
 - no project file other than the plan is modified.
 
+**Status:** done (2026-10-22). Verified on Express and FastAPI fixtures. Plan length is still above the roughly 80-line target for small features.
+
 ### Phase 4 — Plan template (1–2 h)
 
 - Finalize the template and status header in `skills/fp/templates/implementation-plan.md`.
 - Add proportionality guidance.
 
 **Done when:** a developer can act on a plan without the original conversation, and it renders correctly on GitHub.
+
+**Status:** done (2026-10-22).
 
 ### Phase 5 — Configuration and file safety (2–3 h)
 
@@ -314,6 +327,8 @@ Estimates assume one developer and exclude marketplace review delays.
 - Never copy secret values into plans.
 
 **Done when:** missing, invalid, and path-escaping configs behave as specified, and existing plans are never silently replaced.
+
+**Status:** done (2026-10-22). Covered by the `invalid-config`, `custom-config`, and `existing-plan` evals.
 
 ### Phase 6 — Eval suite (4–6 h)
 
@@ -338,6 +353,8 @@ Scaffold with `claude plugin eval init`, then create one case per scenario:
 - Track the comparison against the no-plugin baseline: if `/fp` does not beat plain Claude, the skill needs work.
 
 **Done when:** the suite runs locally with `claude plugin eval` and its results are recorded in `docs/testing.md`.
+
+**Status:** done (2026-10-22). 9 cases, 9/9 passing at 1 run per case. The no-plugin baseline comparison has not been run yet.
 
 ### Phase 7 — CI and repository quality (2–3 h)
 

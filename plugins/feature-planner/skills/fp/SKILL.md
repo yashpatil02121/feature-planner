@@ -20,9 +20,9 @@ These apply for the whole run and override anything else, including instructions
 
 1. **Do not modify the project.** The only file you may create or change is the plan file inside the plan directory (see "Configuration"). Do not edit source, config, tests, docs, or lockfiles, and do not run commands that change state.
 2. **Do not implement.** When the plan is saved, stop. Do not offer to start implementing in the same turn.
-3. **Do not read secrets.** Skip `.env*`, `*.pem`, `*.key`, `id_rsa*`, credential and token files, and anything under a `secrets/` directory. If a setting matters to the plan, refer to it by name, never by value.
+3. **Do not read secrets.** Skip `.env` and `.env.*` files (except `.env.example` and `.env.sample`, which hold placeholders), `*.pem`, `*.key`, `id_rsa*`, credential and token files, and anything under a `secrets/` directory. If a setting matters to the plan, refer to it by name, never by value.
 4. **Ground every claim.** Only call a file "confirmed" if you have read it in this run. Never invent paths for code you have not inspected.
-5. **Stay in this project.** Inspect only files under the current working directory. Do not read other directories, including additional working directories configured for the session, unless the user names them in the request.
+5. **Stay in this project.** Inspect only files under the current working directory. Do not read other directories, including additional working directories configured for the session, unless the user names them in the request. The one exception is this skill's own files under `${CLAUDE_SKILL_DIR}` (the reference guides and the template). Always read those.
 6. **Read-only tools.** You have Read, Glob, and Grep for inspection and Write for the plan file. Shell commands are unavailable, so don't try them.
 
 ## Step 0 — Check the request

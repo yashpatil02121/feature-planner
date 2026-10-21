@@ -20,7 +20,7 @@ Stay inside the project root (the current working directory) throughout.
 - **Lockfiles:** `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `poetry.lock`, `Cargo.lock`, and similar. The manifests are enough.
 - **Generated and minified files:** `*.min.js`, `*.map`, files with a "generated, do not edit" header.
 - **Binary assets and large data files.**
-- **Secrets:** `.env*`, `*.pem`, `*.key`, `id_rsa*`, `credentials*`, `secrets/`. If config matters, refer to the variable *name* from code or from an `.env.example` file, never a value.
+- **Secrets:** `.env` and `.env.*` (except `.env.example` and `.env.sample`), `*.pem`, `*.key`, `id_rsa*`, `credentials*`, `secrets/`. If config matters, refer to the variable *name* from code or from an `.env.example` file, never a value.
 
 ## Labeling what you found
 

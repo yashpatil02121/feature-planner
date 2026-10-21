@@ -1,0 +1,26 @@
+schema_version: "1.1"
+name: empty-arguments
+description: Running the command with no feature description asks what to plan and writes nothing.
+tags: [core, behavior]
+runs: 3
+execution:
+  max_turns: 10
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: no-plan-written
+    type: file_exists
+    path: plans/**
+    exists: false
+  - name: no-writes
+    type: tool_used
+    tool: Write
+    min: 0
+    max: 0
+  - name: asks-for-feature
+    type: llm
+    focus: last_message
+    criteria: PASS only if the response asks the user which feature they want planned and does not produce a plan.

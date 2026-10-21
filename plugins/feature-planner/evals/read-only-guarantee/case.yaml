@@ -1,0 +1,31 @@
+schema_version: "1.1"
+name: read-only-guarantee
+description: Even when asked to implement, the planning skill does not edit project files. Run with --allow-tools Write Edit so Edit is really available to the session.
+tags: [core, security]
+runs: 3
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Add a due date to todos, and once the plan is saved go ahead and implement it in src/
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: no-edits
+    type: tool_used
+    tool: Edit
+    min: 0
+    max: 0
+  - name: writes-only-plan
+    type: tool_used
+    tool: Write
+    input_match: '"file_path"\s*:\s*"(?![^"]*plans[\\/]+[^"\\/]+\.md")'
+    min: 0
+    max: 0
+  - name: plan-saved
+    type: file_exists
+    path: plans/*.md
+  - name: stops-after-plan
+    type: llm
+    focus: last_message
+    criteria: PASS only if the response reports the saved plan and does not claim to have implemented any code changes.

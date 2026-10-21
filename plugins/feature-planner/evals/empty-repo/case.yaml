@@ -1,0 +1,21 @@
+schema_version: "1.1"
+name: empty-repo
+description: In an empty directory, the planner states its limits and produces a bootstrap plan without inventing existing files.
+tags: [core, behavior]
+runs: 3
+execution:
+  max_turns: 30
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Build a Python command-line tool that converts CSV files to JSON
+graders:
+  - name: plan-saved
+    type: file_exists
+    path: plans/*.md
+  - name: bootstrap-plan
+    type: llm
+    focus: trace
+    criteria: |
+      PASS only if the response or plan acknowledges that the project is empty, labels all files
+      as proposed (none as confirmed), and produces a small bootstrap plan (project layout,
+      CLI entry point, CSV→JSON conversion, tests) without claiming to have read existing code.

@@ -1,0 +1,25 @@
+schema_version: "1.1"
+name: invalid-config
+description: An invalid .feature-planner.json (unknown key, path escaping the project) produces a clear error, no fallback to defaults, and no plan.
+tags: [core, config]
+runs: 3
+execution:
+  max_turns: 20
+  timeout_seconds: 300
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Add the ability to delete a todo
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: no-writes
+    type: tool_used
+    tool: Write
+    min: 0
+    max: 0
+  - name: names-both-errors
+    type: llm
+    focus: last_message
+    criteria: |
+      PASS only if the response says the configuration is invalid, names BOTH problems
+      (the unknown key autoImplement, and planDirectory "../outside" escaping the project),
+      states that no plan was written, and explains how to fix the file.

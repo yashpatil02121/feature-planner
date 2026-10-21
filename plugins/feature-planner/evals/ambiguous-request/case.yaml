@@ -1,0 +1,25 @@
+schema_version: "1.1"
+name: ambiguous-request
+description: A vague request produces focused clarifying questions (or explicit assumptions) instead of an invented plan.
+tags: [core, behavior]
+runs: 3
+execution:
+  max_turns: 40
+  timeout_seconds: 600
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Make notes better
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: no-plan-written
+    type: file_exists
+    path: plans/**
+    exists: false
+  - name: asks-questions
+    type: llm
+    focus: last_message
+    criteria: |
+      PASS only if the response does not present a finished plan, and instead asks at most three
+      focused clarifying questions about what "better" means for this notes service, grounded in
+      what the code actually has (e.g. missing update/delete endpoints, placeholder auth, no pagination).
+      FAIL if it invents requirements and claims a plan was saved.
