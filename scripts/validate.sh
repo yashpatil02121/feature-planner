@@ -22,9 +22,14 @@ step "Required files"
 required=(
   README.md
   LICENSE
+  CONTRIBUTING.md
+  SECURITY.md
+  CHANGELOG.md
   docs/plan.md
   docs/architecture.md
+  docs/configuration.md
   docs/testing.md
+  examples/README.md
   "$PLUGIN/skills/fp/SKILL.md"
   "$PLUGIN/skills/fp/templates/implementation-plan.md"
   "$PLUGIN/skills/fp/reference/codebase-inspection.md"
@@ -63,9 +68,11 @@ if [[ "$plugin_version" == "$market_version" ]]; then
 else
   fail "plugin.json $plugin_version != marketplace.json $market_version"
 fi
-grep -q "feature-planner@$plugin_version" "$PLUGIN/skills/fp/SKILL.md" \
-  && echo "ok  SKILL.md planner header uses $plugin_version" \
-  || fail "SKILL.md planner header does not mention feature-planner@$plugin_version"
+for f in "$PLUGIN/skills/fp/SKILL.md" "$PLUGIN/skills/fp/templates/implementation-plan.md"; do
+  grep -q "feature-planner@$plugin_version" "$f" \
+    && echo "ok  $f planner header uses $plugin_version" \
+    || fail "$f planner header does not mention feature-planner@$plugin_version"
+done
 
 step "Eval cases"
 for dir in "$PLUGIN"/evals/*/; do

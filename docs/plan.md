@@ -72,7 +72,7 @@ A plugin cannot ship a bare `/fp`: plugin `settings.json` honors only `agent` an
 **V1 decision:** document `/feature-planner:fp` as the command.
 
 - **Verified in Phase 2:** setting `name: fp` does not expose a bare `/fp`. Only `feature-planner:fp` is registered (see [architecture.md](architecture.md)).
-- **Opt-in shortcut:** users who want a bare `/fp` can create a personal skill at `~/.claude/skills/fp/SKILL.md` that forwards to the plugin skill. The README gives the exact file contents. The plugin does not install it automatically.
+- **Opt-in shortcut: dropped (Phase 8).** A personal or project skill named `fp` that forwards to `feature-planner:fp` failed to delegate in testing. Claude then planned without the skill's tool restrictions. It is not documented (see [architecture.md](architecture.md)).
 
 ## 4. Repository structure
 
@@ -396,6 +396,14 @@ Release sequence:
 2. `v0.2.0`: template, configuration, and evals.
 3. `v0.3.0`: marketplace install validated, docs complete.
 4. `v1.0.0`: stable behavior with a passing eval suite.
+
+**Status:** done (2026-10-22). Version bumped to 0.3.0, ready to tag.
+
+- The README covers all ten sections. The bare `/fp` shortcut was dropped because it bypasses the tool restrictions.
+- Added CONTRIBUTING, SECURITY (with the security model), CHANGELOG, `docs/configuration.md`, and issue templates.
+- The examples are generated from the eval fixtures rather than from real open-source repositories, so they are reproducible from this repository.
+- Clean marketplace install, update, and uninstall were verified from GitHub.
+- **Still open before v1.0.0:** a baseline comparison run, the manual plan-mode approval check, plan length (examples run 147–189 lines), and an optional plugin icon.
 
 ## 10. Security and reliability requirements
 

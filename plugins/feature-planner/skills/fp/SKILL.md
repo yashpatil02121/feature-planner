@@ -95,7 +95,7 @@ Before saving, run the checklist in `${CLAUDE_SKILL_DIR}/reference/plan-quality-
    - If it exists, ask the user whether to **replace** it or **save as a new version**. A new version gets the next free suffix `-2`, `-3`, ….
    - Never overwrite without the user's explicit answer.
 3. **Write the plan** using the template at `${CLAUDE_SKILL_DIR}/templates/implementation-plan.md`.
-   - Fill in the header with `status: draft`, the feature name, today's date, and `planner: feature-planner@0.1.0`.
+   - Fill in the header with `status: draft`, the feature name, today's date, and `planner: feature-planner@0.3.0`.
    - Keep the plan proportional. A feature touching a few files should fit in about 80 lines. Collapse sections that don't apply to a single "None" line, and don't repeat the same detail in several sections.
    - Do not list the plan file itself in "Files to Create or Modify".
 4. **Report** in under 15 lines:

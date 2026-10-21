@@ -36,6 +36,11 @@ The fixes these checks prompted:
 
 The first full pass (2026-10-22, 1 run per case, no baseline) scored 9/9 after one grader fix. The fix: the `python-migration` judge saw only part of a 50-message trace, so it failed a plan that was correct. It was replaced with regex checks on the content of the plan's `Write` call. File-focus graders don't accept globs, and plan filenames are date-based. A suite pass costs about $1.60 and takes about 2 minutes with `-j 4`.
 
+## Phase 8 findings
+
+- **A forwarding `/fp` shortcut doesn't work, and is unsafe.** I tested a project-level skill at `.claude/skills/fp/SKILL.md` that tells Claude to invoke `feature-planner:fp`. `/fp` was registered, but the `Skill` call to the plugin skill failed with no detail. Claude then improvised a plan using `Bash`, outside the skill's tool restrictions. Nothing was edited, but the read-only guarantee did not apply. **The shortcut is not documented.** A bare `/fp` stays on the future list, and should only ship if a skill can reliably delegate to another skill.
+- **Clean install verified.** Using an isolated `CLAUDE_CONFIG_DIR`, both `claude plugin install feature-planner --marketplace yashpatil02121/feature-planner` and the two-step `marketplace add` + `install feature-planner@feature-planner` installed the plugin from GitHub. `plugin update` and `plugin uninstall` both worked.
+
 ## Other observations
 
 - **Workspace boundary.** One plan-mode run globbed an additional working directory from the user's settings (`D:/search-auditor`). The skill now restricts inspection to the current working directory. The rerun stayed inside the project.

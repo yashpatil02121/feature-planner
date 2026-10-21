@@ -1,0 +1,44 @@
+name: Bug report
+description: The planner did something wrong, or a plan was poor.
+labels: [bug]
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Output of `claude --version` and the feature-planner version from `/plugin`.
+      placeholder: Claude Code 2.1.306, feature-planner 0.3.0
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: /feature-planner:fp Add password reset
+    validations:
+      required: true
+  - type: textarea
+    id: project
+    attributes:
+      label: Project
+      description: Stack and rough size. Link the repository if it's public.
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Include the relevant parts of the plan or transcript. Remove any secrets first.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Permission mode
+      options: [default, acceptEdits, plan, bypassPermissions, other]
