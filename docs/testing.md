@@ -10,9 +10,31 @@ Feature Planner is a prompt-driven skill, so the tests check behavior, not exact
 From the repository root:
 
 ```bash
-claude plugin validate . --strict
-claude plugin validate ./plugins/feature-planner --strict
+bash scripts/validate.sh
 ```
+
+It runs the same checks as CI:
+
+- `claude plugin validate --strict` on the marketplace and the plugin;
+- required files exist;
+- text files are UTF-8, which catches files saved as UTF-16 on Windows;
+- plugin and marketplace versions match the `planner:` header in `SKILL.md`;
+- every eval case has a `case.yaml` and its scaffold script;
+- shell syntax;
+- Markdown lint (`.markdownlint-cli2.jsonc`).
+
+It needs the `claude` CLI and Node.js. No API key is required.
+
+## Continuous integration
+
+| Workflow | Trigger | What it does | Cost |
+| -------- | ------- | ------------ | ---- |
+| [`validate.yml`](../.github/workflows/validate.yml) | Every push to `main` and every pull request | `bash scripts/validate.sh` | Free |
+| [`evals.yml`](../.github/workflows/evals.yml) | Mondays 06:00 UTC, and manual dispatch | `claude plugin eval` | Weekly run: 3 runs per case with the baseline, about $10 (capped at $15). Manual default: 1 run per case, no baseline, about $1.60 (capped at $5) |
+
+To set up evals, add an `ANTHROPIC_API_KEY` repository secret (**Settings → Secrets and variables → Actions**). The run summary shows a per-case table comparing the plugin with the baseline. The full HTML report is uploaded as the `eval-results` artifact.
+
+Both workflows pin `CLAUDE_CODE_VERSION` to the version the plugin was last verified with. Bump it deliberately, after a local run passes.
 
 ## Eval suite
 

@@ -1,0 +1,109 @@
+name: Evals
+
+# Runs the plugin eval suite against real Claude sessions. It costs API credits,
+# so it runs weekly and on demand rather than on every pull request.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC: full suite with the no-plugin baseline
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: Runs per case
+        default: "1"
+      ablation:
+        description: Baseline arm (none = cheaper; with-without = compare against plain Claude)
+        type: choice
+        options: [none, with-without]
+        default: none
+      case:
+        description: Case name glob (empty = all cases)
+        default: ""
+      max_cost_usd:
+        description: Hard cost ceiling for the run, in USD
+        default: "5"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evals
+  cancel-in-progress: false
+
+env:
+  CLAUDE_CODE_VERSION: 2.1.306
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: plugins/feature-planner
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      RUNS: ${{ inputs.runs || '3' }}
+      ABLATION: ${{ inputs.ablation || 'with-without' }}
+      CASE: ${{ inputs.case || '' }}
+      MAX_COST_USD: ${{ inputs.max_cost_usd || '15' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check API key
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Add an ANTHROPIC_API_KEY repository secret to run evals."
+            exit 1
+          fi
+
+      - name: Install Claude Code
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+
+      - name: Run eval suite
+        run: |
+          args=(--runs "$RUNS" --ablation "$ABLATION" --max-cost-usd "$MAX_COST_USD" -j 4)
+          [ -n "$CASE" ] && args+=(--case "$CASE")
+          # --scaffold: seed fixture projects from evals/*/scaffold.sh (authored in this repo)
+          # --allow-tools Write Edit: Write saves plans; Edit is granted so the
+          #   read-only cases prove the skill itself blocks it
+          claude plugin eval . "${args[@]}" \
+            --scaffold --allow-tools Write Edit --trust-plugin --no-publish \
+            --output-dir "$RUNNER_TEMP/eval-results" \
+            --json "$RUNNER_TEMP/eval-results/result.json"
+
+      - name: Summarize results
+        if: always()
+        run: |
+          f="$RUNNER_TEMP/eval-results/result.json"
+          [ -f "$f" ] || { echo "No results file." >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          node -e '
+            const r = require(process.argv[1]);
+            const pct = (x) => (x * 100).toFixed(0) + "%";
+            const lines = [
+              `## Eval results`,
+              ``,
+              `Cases passed: **${r.aggregates.casesPassed}/${r.aggregates.casesTotal}** · score ${pct(r.aggregates.overallScore)} · cost $${r.costUsd.toFixed(2)} · ${r.durationSeconds}s${r.partial ? " · **partial run**" : ""}`,
+              ``,
+              `| Case | With plugin | Baseline | Failed graders |`,
+              `| ---- | ----------- | -------- | -------------- |`,
+            ];
+            for (const c of r.cases) {
+              const withRuns = c.arms.with || [];
+              const base = c.arms.without || [];
+              const avg = (runs) => runs.length ? pct(runs.reduce((s, x) => s + x.score, 0) / runs.length) : "–";
+              const failed = [...new Set(withRuns.flatMap((x) => x.graders.filter((g) => !g.passed).map((g) => g.name)))];
+              lines.push(`| ${c.name} | ${avg(withRuns)} | ${avg(base)} | ${failed.join(", ") || "–"} |`);
+            }
+            console.log(lines.join("\n"));
+          ' "$f" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: ${{ runner.temp }}/eval-results
+          if-no-files-found: ignore

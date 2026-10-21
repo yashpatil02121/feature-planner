@@ -6,7 +6,7 @@ Open-source · Local-first · Claude Code native
 
 Feature Planner is an open-source Claude Code plugin. A developer describes a feature; the plugin inspects the existing codebase, designs an approach that fits its conventions, breaks the work into ordered tasks with acceptance criteria and tests, and saves the result as a Markdown plan, all before any code is written.
 
-```
+```text
 /feature-planner:fp Add password reset
 ```
 
@@ -33,7 +33,7 @@ The README should state this in one paragraph.
 
 ## 2. Architecture and technology choices
 
-```
+```text
 Developer:     /feature-planner:fp Add password reset
                  │
 Plugin skill:    SKILL.md workflow + $ARGUMENTS
@@ -63,7 +63,7 @@ A native helper (for example in Rust, for fast repository indexing) stays a futu
 
 Plugin skills are namespaced. A plugin named `feature-planner` with a skill at `skills/fp/` is invoked as:
 
-```
+```text
 /feature-planner:fp <feature description>
 ```
 
@@ -76,7 +76,7 @@ A plugin cannot ship a bare `/fp`: plugin `settings.json` honors only `agent` an
 
 ## 4. Repository structure
 
-```
+```text
 feature-planner/
 ├── .claude-plugin/
 │   └── marketplace.json
@@ -366,6 +366,12 @@ Scaffold with `claude plugin eval init`, then create one case per scenario:
 - `evals.yml` runs nightly and on manual dispatch with `claude plugin eval --json --trust-plugin`, using an API key stored as a repository secret, and gates on the exit code. It does not run on every PR, to control cost.
 
 **Done when:** invalid manifests fail PRs, and contributors can reproduce every check locally.
+
+**Status:** built (2026-10-22); first GitHub run pending.
+
+- All checks live in `scripts/validate.sh`, which runs locally and in CI. It also checks UTF-8 encoding (the committed README was UTF-16 and has been converted), version consistency, eval case structure, and shell syntax.
+- `evals.yml` runs **weekly** (Mondays) rather than nightly, at about $10 per run, with a cost cap. Manual runs default to a cheap single pass.
+- The workflows have not run on GitHub yet. `evals.yml` also needs the `ANTHROPIC_API_KEY` secret.
 
 ### Phase 8 — Docs, examples, and release (3–4 h)
 
