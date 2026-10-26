@@ -4,6 +4,10 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-27
+
+Planning stays bounded on large repositories, and plans always include automated tests. On a 281-file monorepo, the planner found the two buried files that mattered and reused existing shared middleware in every run, while reading about 4% of the project.
+
 ### Changed
 
 - Inspection works in parallel batches and searches before reading, with a budget of about 15 files, to keep planning bounded on large repositories.
@@ -50,6 +54,7 @@ First public pre-release.
 - CI: `validate.yml` on every push and pull request, and `evals.yml` weekly and on demand.
 - Example plans, documentation, contributing guide, and security policy.
 
-[Unreleased]: https://github.com/yashpatil02121/feature-planner/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/yashpatil02121/feature-planner/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/yashpatil02121/feature-planner/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/yashpatil02121/feature-planner/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/yashpatil02121/feature-planner/releases/tag/v0.3.0

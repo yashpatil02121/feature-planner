@@ -7,7 +7,7 @@ body:
     attributes:
       label: Versions
       description: Output of `claude --version` and the feature-planner version from `/plugin`.
-      placeholder: Claude Code 2.1.306, feature-planner 1.0.0
+      placeholder: Claude Code 2.1.306, feature-planner 1.1.0
     validations:
       required: true
   - type: input

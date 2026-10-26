@@ -9,7 +9,7 @@ A Claude Code plugin that plans features before you build them. Describe a featu
 /feature-planner:fp Add password reset
 ```
 
-> **Status:** v1.0.0. See [CHANGELOG.md](CHANGELOG.md) and the [roadmap](docs/plan.md).
+> **Status:** v1.1.0. See [CHANGELOG.md](CHANGELOG.md) and the [roadmap](docs/plan.md).
 
 ## What it does
 
