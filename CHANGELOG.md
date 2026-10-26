@@ -4,6 +4,11 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Changed
+
+- Docs now present `/fp` as the everyday command. It runs the same planner, with the same enforced read-only rules, as `/feature-planner:fp`, as long as no other skill or command is named `fp`. Earlier docs wrongly said only the full name worked. That conclusion came from the slash-command list, which shows only the full name. The skill itself is unchanged.
+- The README troubleshooting table explains the name clash, and that the `/` menu shows only the full name.
+
 ## [1.1.0] - 2026-10-27
 
 Planning stays bounded on large repositories, and plans always include automated tests. On a 281-file monorepo, the planner found the two buried files that mattered and reused existing shared middleware in every run, while reading about 4% of the project.

@@ -88,4 +88,4 @@ env $(env | cut -d= -f1 | grep -E '^(CLAUDE|ANTHROPIC_BASE_URL|USE_LOCAL_OAUTH|U
   2. Run `/feature-planner:fp Add the ability to mark a todo as done and delete a todo`.
   3. Approve with auto-accept edits. Expect `git status --short` to show only `?? plans/…md`, with `status: draft`.
   4. Repeat, rejecting at the prompt. Expect `git status --short` to be empty.
-- **Bare `/fp` shortcut:** verified absent (see [architecture.md](architecture.md)).
+- **Bare `/fp`:** works with the installed plugin when no other skill is named `fp` (verified by hand on 2026-10-27; see [architecture.md](architecture.md#bare-fp-corrected-2026-10-27)). The eval prompts use `/feature-planner:fp`, so the short form isn't covered by automation.

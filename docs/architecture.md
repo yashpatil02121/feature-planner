@@ -8,7 +8,7 @@ All tests used Claude Code 2.1.306, headless (`claude -p --plugin-dir`), on a sm
 
 | # | Question | Result |
 | - | -------- | ------ |
-| 1 | Does `name: fp` also expose a bare `/fp`? | **No.** The session's slash-command list contains only `feature-planner:fp`. Document the namespaced command, plus the opt-in personal-skill shortcut. |
+| 1 | Does `name: fp` also expose a bare `/fp`? | **Yes. Corrected on 2026-10-27.** The original "No" came from the slash-command list alone, which contains only `feature-planner:fp`; nobody typed `/fp`. Typing `/fp <feature>` does run the plugin skill when no other skill or command is named `fp`. See "Bare `/fp`" below. |
 | 2 | Does `disallowed-tools` block `Edit`, `NotebookEdit`, `Bash` while `fp` runs? | **Yes.** Under `--permission-mode acceptEdits`, where `Edit` is normally auto-approved, an `Edit` on `src/store.js` was refused with "Permission to use Edit has been denied". The file was unchanged. The tools stay listed but every call is denied, so the restriction works as a deny rule, not by removing the tool. |
 | 3 | Do `Bash(git …:*)` entries in `allowed-tools` survive `Bash` being disallowed? | **No.** `git log --oneline -1` was denied, so the deny rule wins. The git entries were removed from `allowed-tools`, and inspection uses Glob, Grep, and Read only. |
 | 4 | Is writing the plan file blocked in plan mode? | **Yes**, for paths inside the project. Claude writes to the plan-mode file (`~/.claude/plans/…`) instead and calls `ExitPlanMode`. The skill now tells Claude to present the plan through `ExitPlanMode`, save it to `plans/` only after approval, and never implement. In headless mode `ExitPlanMode` is unavailable, and the documented fallback (show the plan in the conversation, give the intended path) was followed. **The interactive approval path was verified by hand on 2026-10-26:** approving with auto-accept edits saved only `plans/…md` (`status: draft`) and changed no source files, and rejecting wrote nothing. |
@@ -107,6 +107,19 @@ Changes made (2026-10-26):
 - **Remaining limits:**
   - The fixture's generated code is uniform and greps cleanly. Real repos with ambiguous names, or thousands of files, could still behave differently.
   - The `large-repo` eval passes 3/3 in the eval harness (16–17 reads per run). Harness runs cost more (about $0.29) than headless runs, likely because each run starts with a cold cache.
+
+## Bare `/fp` (corrected 2026-10-27)
+
+Tested with the plugin **installed from the marketplace** (v1.1.0, user scope) on Claude Code 2.1.310, in a throwaway project with no other skill named `fp`:
+
+| Check | Result |
+| ----- | ------ |
+| `/fp Add the ability to delete a todo` | Ran the plugin skill. It read the template from the installed plugin folder (`plugins/cache/feature-planner/feature-planner/1.1.0/…`), saved `plans/2026-10-27-delete-todo.md` with `planner: feature-planner@1.1.0`, and cited "this skill's hard rules". |
+| Probe under `--permission-mode acceptEdits`: `Bash` (`echo hello`) and `Edit` on `src/store.js` | Both denied ("Permission to use … has been denied"). Only `plans/` changed. |
+
+- **The short name resolves when it's unambiguous.** The `/` menu lists only `feature-planner:fp`, but Claude Code still resolves the short name. This matches the docs: the bare name "invokes the skill unless another command already uses that name".
+- **The earlier failures were a name clash I created.** Phase 8's forwarding shortcut, and the later full-copy test, both added a second skill named `fp` next to the installed plugin. With two candidates, the `Skill` call failed and Claude fell back to unrestricted tools. Neither failure shows that `/fp` is broken. Both show that `/fp` is unsafe when ambiguous.
+- **Guidance:** document `/fp` as the short form, with the caveat that it only works while nothing else is named `fp`. `/feature-planner:fp` always works. **Never** add a second skill named `fp`.
 
 ## Other observations
 

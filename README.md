@@ -6,8 +6,10 @@
 A Claude Code plugin that plans features before you build them. Describe a feature, and Feature Planner reads your codebase, designs an approach that fits your existing conventions, and saves a structured, reviewable implementation plan to `plans/`. It never touches your source code.
 
 ```text
-/feature-planner:fp Add password reset
+/fp Add password reset
 ```
+
+`/fp` is the short form of `/feature-planner:fp`. Both run the same planner with the same safety rules.
 
 > **Status:** v1.1.0. See [CHANGELOG.md](CHANGELOG.md) and the [roadmap](docs/plan.md).
 
@@ -29,11 +31,11 @@ Claude Code's plan mode gives you a plan in the conversation. Feature Planner gi
 - **grounding rules** that separate what was read from what is assumed;
 - a **status field** that later tooling can rely on.
 
-The two work together: if you run `/feature-planner:fp` in plan mode, the plan is presented for approval and saved once you approve.
+The two work together: if you run `/fp` in plan mode, the plan is presented for approval and saved once you approve.
 
 ## Requirements
 
-- [Claude Code](https://code.claude.com) 2.1.275 or later (tested with 2.1.306).
+- [Claude Code](https://code.claude.com) 2.1.275 or later (tested with 2.1.306 and 2.1.310).
 - Nothing else: no server, database, or extra API key.
 
 ## Installation
@@ -76,8 +78,10 @@ Commands that start with `/` are typed at Claude Code's `>` prompt, not in your 
 2. At Claude Code's `>` prompt, describe the feature:
 
    ```text
-   /feature-planner:fp Let users export their notes as Markdown
+   /fp Let users export their notes as Markdown
    ```
+
+   `/fp` works as long as no other skill or command in your setup is also named `fp`. If one is, use the full name, `/feature-planner:fp`, which always works.
 
 3. The planner reads the relevant code. If the request is ambiguous, it asks up to three clarifying questions and waits for your answers.
 4. The plan is saved as `plans/2026-10-22-export-notes-markdown.md`, and you get a short summary with the top risks and open questions.
@@ -119,7 +123,8 @@ An invalid config stops the planner with a clear error. It never silently falls 
 | Problem | Fix |
 | ------- | --- |
 | `'/plugin' is not recognized` or `command not found` | You typed a Claude Code command in your terminal. Use `claude plugin install …` in the terminal, or start `claude` first and type `/plugin …` at its prompt. |
-| `/fp` doesn't work | Plugin skills are namespaced, so the command is `/feature-planner:fp`. Type `/feature-planner` and pick it from the list. |
+| `/fp` runs something else, or fails | Another skill or command is also named `fp`, for example in `~/.claude/skills/` or `.claude/skills/`, so the short name is ambiguous. Use `/feature-planner:fp`, or rename the other one. |
+| `/fp` doesn't appear in the `/` menu | The menu lists the full name, `/feature-planner:fp`. Typing `/fp` with your feature still runs it. |
 | "Permission to use Write" prompt | Claude Code asks before writing the plan file. Allow it, or deny it and the plan is shown in the conversation instead. |
 | The plan wasn't saved in plan mode | Plan mode blocks writes until you approve. Approve the plan, or leave plan mode and run the command again. |
 | "Configuration is invalid" | Fix the key it names in `.feature-planner.json`. See [docs/configuration.md](docs/configuration.md). |

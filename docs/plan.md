@@ -61,18 +61,17 @@ A native helper (for example in Rust, for fast repository indexing) stays a futu
 
 ## 3. Command name
 
-Plugin skills are namespaced. A plugin named `feature-planner` with a skill at `skills/fp/` is invoked as:
+Plugin skills are namespaced. A plugin named `feature-planner` with a skill at `skills/fp/` is registered as `feature-planner:fp`. Claude Code also resolves the short name `/fp` when no other skill or command uses it.
 
 ```text
+/fp <feature description>
 /feature-planner:fp <feature description>
 ```
 
-A plugin cannot ship a bare `/fp`: plugin `settings.json` honors only `agent` and `subagentStatusLine`.
+**Decision (revised 2026-10-27):** document `/fp` as the everyday command and `/feature-planner:fp` as the always-unambiguous form.
 
-**V1 decision:** document `/feature-planner:fp` as the command.
-
-- **Verified in Phase 2:** setting `name: fp` does not expose a bare `/fp`. Only `feature-planner:fp` is registered (see [architecture.md](architecture.md)).
-- **Opt-in shortcut: dropped (Phase 8).** A personal or project skill named `fp` that forwards to `feature-planner:fp` failed to delegate in testing. Claude then planned without the skill's tool restrictions. It is not documented (see [architecture.md](architecture.md)).
+- **Phase 2 got this wrong.** It concluded "no bare `/fp`" from the slash-command list alone. Typing `/fp` with the installed plugin runs the skill, with its tool restrictions enforced (see [architecture.md](architecture.md#bare-fp-corrected-2026-10-27)).
+- **Name-clash caveat:** `/fp` only works while nothing else is named `fp`. The Phase 8 forwarding shortcut, and a later full-copy test, each added a second `fp` skill. The clash made Claude fall back to unrestricted tools. That's why the docs say never to add a second skill named `fp`.
 
 ## 4. Repository structure
 
@@ -239,7 +238,7 @@ Rules:
 
 **Future:**
 
-- Verified bare `/fp` with a supported installer.
+- ~~Verified bare `/fp` with a supported installer.~~ Done without an installer: `/fp` resolves on its own (2026-10-27). Remaining: an automated eval that invokes `/fp` rather than the full name.
 - Native indexing helper.
 - Support for other coding agents.
 - Dependency visualization.
