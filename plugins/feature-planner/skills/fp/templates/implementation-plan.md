@@ -2,7 +2,7 @@
 feature: <Feature name>
 status: draft            # draft | approved | in-progress | done
 created: <YYYY-MM-DD>
-planner: feature-planner@0.3.0
+planner: feature-planner@1.0.0
 ---
 
 # Feature: <Feature name>

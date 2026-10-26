@@ -82,5 +82,9 @@ env $(env | cut -d= -f1 | grep -E '^(CLAUDE|ANTHROPIC_BASE_URL|USE_LOCAL_OAUTH|U
 
 ## Not covered by automation
 
-- **Interactive plan-mode approval:** `ExitPlanMode` is unavailable in headless runs. Check it by hand: run `/feature-planner:fp <feature>` in plan mode, approve, and confirm that the plan is saved to `plans/` and nothing is implemented.
+- **Interactive plan-mode approval:** `ExitPlanMode` is unavailable in headless runs, so this is checked by hand before each release. Last verified 2026-10-26 for v1.0.0. The steps:
+  1. In a fixture project created with `evals/_fixtures/todo-api.sh` and committed to git, run `claude --plugin-dir <plugin> --permission-mode plan`.
+  2. Run `/feature-planner:fp Add the ability to mark a todo as done and delete a todo`.
+  3. Approve with auto-accept edits. Expect `git status --short` to show only `?? plans/…md`, with `status: draft`.
+  4. Repeat, rejecting at the prompt. Expect `git status --short` to be empty.
 - **Bare `/fp` shortcut:** verified absent (see [architecture.md](architecture.md)).

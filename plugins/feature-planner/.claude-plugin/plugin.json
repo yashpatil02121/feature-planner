@@ -1,6 +1,6 @@
 {
   "name": "feature-planner",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Inspects your codebase and writes a structured, reviewable implementation plan before any code is written.",
   "author": {
     "name": "Yash Sanjay Patil",

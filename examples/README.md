@@ -1,6 +1,6 @@
 # Example plans
 
-These are unedited plans from `/feature-planner:fp` (unreleased skill, after the plan-length work), generated against the fixture projects in [`plugins/feature-planner/evals/_fixtures/`](../plugins/feature-planner/evals/_fixtures/). You can recreate any of them by running the fixture script in an empty directory and then running the same command.
+These are unedited plans from `/feature-planner:fp` (v1.0.0 skill), generated against the fixture projects in [`plugins/feature-planner/evals/_fixtures/`](../plugins/feature-planner/evals/_fixtures/). You can recreate any of them by running the fixture script in an empty directory and then running the same command.
 
 | Example | Template | Project | Command | What it shows |
 | ------- | -------- | ------- | ------- | ------------- |

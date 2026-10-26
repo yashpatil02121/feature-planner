@@ -102,7 +102,7 @@ Before saving, run the checklist in `${CLAUDE_SKILL_DIR}/reference/plan-quality-
    - If it exists, ask the user whether to **replace** it or **save as a new version**. A new version gets the next free suffix `-2`, `-3`, ….
    - Never overwrite without the user's explicit answer.
 3. **Write the plan** using the template you chose in stage 4, from `${CLAUDE_SKILL_DIR}/templates/`.
-   - Fill in the header with `status: draft`, the feature name, today's date, and `planner: feature-planner@0.3.0`.
+   - Fill in the header with `status: draft`, the feature name, today's date, and `planner: feature-planner@1.0.0`.
    - Stay within the template's line target. Before writing, cut anything that repeats another section, and anything a developer would not miss.
    - Leave out sections that don't apply rather than writing "None", except where the template marks a section as required.
    - Do not list the plan file itself among the files to change.

@@ -2,7 +2,7 @@
 feature: Mark a todo as done and delete a todo
 status: draft
 created: 2026-10-22
-planner: feature-planner@0.3.0
+planner: feature-planner@1.0.0
 ---
 
 # Feature: Mark a todo as done and delete a todo

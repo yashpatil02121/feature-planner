@@ -274,7 +274,7 @@ Estimates assume one developer and exclude marketplace review delays.
 
 **Done when:** validation passes, the command runs, and the four findings are recorded in `docs/architecture.md`.
 
-**Status:** done (2026-10-22). The interactive plan-mode approval path is still to be checked by hand.
+**Status:** done (2026-10-22). The interactive plan-mode approval path was verified by hand on 2026-10-26.
 
 ### Phase 3 — Core planning workflow (5–7 h)
 
@@ -387,7 +387,8 @@ Release sequence:
 - **v1.0.0 progress:**
   - Plan length: **done**. Compact and full templates, and the examples are now 47–89 lines.
   - Baseline comparison: **done**. 27/27 with the plugin, mean delta +0.44 over plain Claude; see [architecture.md](architecture.md).
-  - **Still open:** the manual plan-mode approval check, and an optional plugin icon.
+  - Plan-mode approval check: **done** (2026-10-26). Approving saves only the plan, and rejecting writes nothing.
+  - Optional plugin icon: deferred. It's only needed for a plugin-directory listing.
 
 ## 10. Security and reliability requirements
 

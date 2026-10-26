@@ -9,7 +9,7 @@ A Claude Code plugin that plans features before you build them. Describe a featu
 /feature-planner:fp Add password reset
 ```
 
-> **Status:** pre-release (v0.3.0). See [CHANGELOG.md](CHANGELOG.md) and the [roadmap](docs/plan.md).
+> **Status:** v1.0.0. See [CHANGELOG.md](CHANGELOG.md) and the [roadmap](docs/plan.md).
 
 ## What it does
 
@@ -38,25 +38,42 @@ The two work together: if you run `/feature-planner:fp` in plan mode, the plan i
 
 ## Installation
 
-Inside Claude Code:
+Run this once, in your terminal (PowerShell, Command Prompt, bash, or zsh):
+
+```bash
+claude plugin install feature-planner --marketplace yashpatil02121/feature-planner
+```
+
+If your Claude Code is older than 2.1.275, add the marketplace first:
+
+```bash
+claude plugin marketplace add yashpatil02121/feature-planner
+claude plugin install feature-planner@feature-planner
+```
+
+Start a new Claude Code session afterwards so the plugin loads.
+
+<details>
+<summary>Installing from inside Claude Code instead</summary>
+
+Commands that start with `/` are typed at Claude Code's `>` prompt, not in your terminal. If you type `/plugin` in PowerShell or bash, you'll get "command not found". Start Claude Code with `claude`, then type:
 
 ```text
 /plugin install feature-planner --marketplace yashpatil02121/feature-planner
 ```
 
-On older versions, add the marketplace first:
-
-```text
-/plugin marketplace add yashpatil02121/feature-planner
-/plugin install feature-planner@feature-planner
-```
-
-The same commands work from a terminal as `claude plugin …`.
+</details>
 
 ## Quick start
 
-1. Open your project in Claude Code.
-2. Describe the feature:
+1. Open your project in Claude Code:
+
+   ```bash
+   cd path/to/your-project
+   claude
+   ```
+
+2. At Claude Code's `>` prompt, describe the feature:
 
    ```text
    /feature-planner:fp Let users export their notes as Markdown
@@ -101,6 +118,7 @@ An invalid config stops the planner with a clear error. It never silently falls 
 
 | Problem | Fix |
 | ------- | --- |
+| `'/plugin' is not recognized` or `command not found` | You typed a Claude Code command in your terminal. Use `claude plugin install …` in the terminal, or start `claude` first and type `/plugin …` at its prompt. |
 | `/fp` doesn't work | Plugin skills are namespaced, so the command is `/feature-planner:fp`. Type `/feature-planner` and pick it from the list. |
 | "Permission to use Write" prompt | Claude Code asks before writing the plan file. Allow it, or deny it and the plan is shown in the conversation instead. |
 | The plan wasn't saved in plan mode | Plan mode blocks writes until you approve. Approve the plan, or leave plan mode and run the command again. |
@@ -109,12 +127,14 @@ An invalid config stops the planner with a clear error. It never silently falls 
 
 ## Updating and uninstalling
 
-```text
-/plugin update feature-planner@feature-planner
-/plugin uninstall feature-planner@feature-planner
+From your terminal:
+
+```bash
+claude plugin update feature-planner@feature-planner
+claude plugin uninstall feature-planner@feature-planner
 ```
 
-Plans you have saved stay in your repository.
+Inside Claude Code, the same commands start with `/plugin` instead of `claude plugin`. Plans you have saved stay in your repository.
 
 ## Documentation
 

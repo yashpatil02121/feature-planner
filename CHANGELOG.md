@@ -4,15 +4,21 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-26
+
+First stable release. In a comparison run with and without the plugin (9 cases × 3 runs), all 27 runs passed with it, scoring a mean +0.44 higher than plain Claude.
+
 ### Changed
 
 - Plans are now sized to the feature. A new **compact** template (summary, context, changes, tasks, risks) is used for small changes, and a shorter eight-section **full** template for everything else. Example plans went from 147–189 lines to 47–89 lines with the same substance.
 - Tasks use a denser format: one header line with files and dependencies, then "Done when" and "Tests".
 - The separate Scope, Testing Strategy, and Definition of Done sections are gone. Their content now lives in the summary or approach, the tasks, and the risks section.
+- The README install section now leads with the terminal commands (`claude plugin install …`), and explains that `/plugin …` is typed inside Claude Code.
 
 ### Added
 
 - Eval graders for plan length (at most 90 lines for compact, 160 for full) and for template choice.
+- Baseline comparison results in `docs/architecture.md`.
 
 ## [0.3.0] - 2026-10-22
 
@@ -30,5 +36,6 @@ First public pre-release.
 - CI: `validate.yml` on every push and pull request, and `evals.yml` weekly and on demand.
 - Example plans, documentation, contributing guide, and security policy.
 
-[Unreleased]: https://github.com/yashpatil02121/feature-planner/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/yashpatil02121/feature-planner/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/yashpatil02121/feature-planner/compare/v0.3.0...v1.0.0
 [0.3.0]: https://github.com/yashpatil02121/feature-planner/releases/tag/v0.3.0

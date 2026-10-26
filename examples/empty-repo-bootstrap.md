@@ -2,7 +2,7 @@
 feature: CSV to JSON command-line tool
 status: draft            # draft | approved | in-progress | done
 created: 2026-10-22
-planner: feature-planner@0.3.0
+planner: feature-planner@1.0.0
 ---
 
 # Feature: CSV to JSON command-line tool
