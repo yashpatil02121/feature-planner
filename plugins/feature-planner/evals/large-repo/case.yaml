@@ -1,0 +1,53 @@
+schema_version: "1.1"
+name: large-repo
+description: In a ~280-file monorepo, the planner finds the two buried files that matter, reuses the existing shared rate limiter instead of inventing one, stays within its read budget, and never reads node_modules or dist.
+tags: [scale, typescript]
+runs: 3
+execution:
+  max_turns: 50
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill]
+  prompt: /feature-planner:fp Rate limit password reset requests per email address
+context:
+  scaffold_script: scaffold.sh
+graders:
+  - name: plan-saved
+    type: file_exists
+    path: plans/*.md
+  - name: finds-endpoint
+    type: regex
+    target: trace
+    pattern: '"name"\s*:\s*"Write".*packages/auth/src/routes/passwordReset\.ts'
+  - name: reuses-shared-limiter
+    type: regex
+    target: trace
+    pattern: '"name"\s*:\s*"Write".*packages/shared/src/middleware/rateLimit\.ts'
+  - name: no-duplicate-limiter
+    type: regex
+    target: trace
+    # CLAUDE.md forbids per-package middleware copies.
+    pattern: '"name"\s*:\s*"Write".*packages/auth/[A-Za-z0-9_/.-]*[Rr]ate-?[Ll]imit[A-Za-z0-9_.-]*\.ts'
+    match: not_contains
+  - name: read-budget
+    type: tool_used
+    tool: Read
+    # About 15 project files, plus 2 templates, the config probe, and root
+    # instruction/manifest probes.
+    min: 1
+    max: 30
+  - name: skips-noise
+    type: tool_used
+    tool: Read
+    input_match: 'node_modules|[\\/]dist[\\/]'
+    min: 0
+    max: 0
+  - name: no-edits
+    type: tool_used
+    tool: Edit
+    min: 0
+    max: 0
+  - name: plan-length
+    type: regex
+    target: trace
+    pattern: '"name"\s*:\s*"Write".*?"content"\s*:\s*"(?:[^"\\]|\\[^n])*(?:\\n(?:[^"\\]|\\[^n])*){160}'
+    match: not_contains

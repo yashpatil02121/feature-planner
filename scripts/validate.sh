@@ -32,10 +32,7 @@ required=(
   examples/README.md
   "$PLUGIN/skills/fp/SKILL.md"
   "$PLUGIN/skills/fp/templates/implementation-plan.md"
-  "$PLUGIN/skills/fp/templates/plan-compact.md"
-  "$PLUGIN/skills/fp/reference/codebase-inspection.md"
-  "$PLUGIN/skills/fp/reference/plan-quality-checklist.md"
-)
+  "$PLUGIN/skills/fp/templates/plan-compact.md")
 for f in "${required[@]}"; do
   [[ -s "$f" ]] && echo "ok  $f" || fail "missing or empty: $f"
 done

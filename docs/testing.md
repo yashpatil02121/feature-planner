@@ -51,6 +51,7 @@ The cases live in `plugins/feature-planner/evals/`. Each case is a `case.yaml` (
 | `existing-plan` | An existing plan with the same name is never overwritten |
 | `read-only-guarantee` | Even when asked to implement, the skill makes no edits (with `Edit` granted to the session) |
 | `empty-repo` | An empty project gets a bootstrap plan with every file labeled proposed |
+| `large-repo` | A 281-file TypeScript monorepo (`shop-monorepo.sh`). Finds the two buried files that matter, reuses the existing shared rate limiter instead of inventing one, stays within 30 reads, and never reads `node_modules` or `dist` |
 
 ### Running
 
@@ -68,7 +69,7 @@ claude plugin eval . --scaffold --allow-tools Write Edit --trust-plugin
   - `-j 4` runs cases in parallel;
   - `--json <file>` writes machine-readable results.
 
-**Cost.** One run costs about $0.10–0.25 on the default model. The full suite is 9 cases × 3 runs × 2 arms (with-plugin and the no-plugin baseline). The last full run cost $8.06 and took about 8 minutes. Its results are in [architecture.md](architecture.md#baseline-comparison-v100-work). Use `--runs 1 --ablation none` while iterating on the skill.
+**Cost.** One run costs about $0.10–0.30 on the default model; `large-repo` is the most expensive case. The full suite is 10 cases × 3 runs × 2 arms (with-plugin and the no-plugin baseline), roughly $10. The last full baseline run, with the original 9 cases, cost $8.06 and took about 8 minutes. Its results are in [architecture.md](architecture.md#baseline-comparison-v100-work). Use `--runs 1 --ablation none` while iterating on the skill.
 
 Results are written to `evals/results/` (gitignored).
 

@@ -4,6 +4,20 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Changed
+
+- Inspection works in parallel batches and searches before reading, with a budget of about 15 files, to keep planning bounded on large repositories.
+- The inspection guide and quality checklist are folded into `SKILL.md`, so each run makes 2 fewer reads. The `reference/` folder is removed.
+- Test files no longer count toward the compact template's limit of about four files.
+
+### Added
+
+- `large-repo` eval: a 281-file TypeScript monorepo fixture checking that the planner finds buried code, reuses existing shared middleware, stays within its read budget, and skips `node_modules` and `dist`.
+
+### Fixed
+
+- Plans could replace automated tests with manual checks, or defer them to open questions. Behavior-changing tasks now always get automated tests, with any enabling change planned as a task and new test files listed.
+
 ## [1.0.0] - 2026-10-26
 
 First stable release. In a comparison run with and without the plugin (9 cases × 3 runs), all 27 runs passed with it, scoring a mean +0.44 higher than plain Claude.

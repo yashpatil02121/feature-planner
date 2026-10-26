@@ -87,11 +87,9 @@ feature-planner/
 │       ├── skills/
 │       │   └── fp/
 │       │       ├── SKILL.md
-│       │       ├── templates/
-│       │       │   └── implementation-plan.md
-│       │       └── reference/
-│       │           ├── codebase-inspection.md
-│       │           └── plan-quality-checklist.md
+│       │       └── templates/
+│       │           ├── plan-compact.md
+│       │           └── implementation-plan.md
 │       └── evals/
 │           └── <case>/
 │               ├── prompt.md
@@ -123,7 +121,7 @@ feature-planner/
 | `plugins/feature-planner/.claude-plugin/plugin.json` | Plugin name, version, description, repository, license |
 | `skills/fp/SKILL.md`                    | Core workflow, kept under ~500 lines                              |
 | `skills/fp/templates/`                  | Plan template, referenced as `${CLAUDE_SKILL_DIR}/templates/...`  |
-| `skills/fp/reference/`                  | Detailed checklists the skill reads when needed                   |
+| `skills/fp/SKILL.md` (guidance)         | Inspection rules and quality checklist, inlined in v1.1 to save reads |
 | `evals/`                                | `claude plugin eval` cases and graders                            |
 | `examples/`                             | Real plans generated against real open-source repositories        |
 | `.github/workflows/validate.yml`        | Manifest and structure validation on every PR                     |
@@ -161,7 +159,7 @@ disallowed-tools: Edit, NotebookEdit, Bash
 2. **Inspect the codebase.** Read `CLAUDE.md` and other project instructions, dependency manifests, entry points, routes, models, and nearby tests. Skip generated files, build output, vendored dependencies, lockfiles, and secret files (`.env*`, key files, credential stores).
 3. **Design the approach.** Reuse existing conventions, identify affected components, compare alternatives only when there is a real choice, and record trade-offs.
 4. **Break down the work.** Produce ordered tasks with IDs, dependencies, files, intent, acceptance criteria, and tests. Each task should be understandable on its own.
-5. **Validate completeness.** Map every requirement to a task and an acceptance criterion. Flag unknowns, security implications, migrations, backward compatibility, and missing tests (checklist in `reference/plan-quality-checklist.md`).
+5. **Validate completeness.** Map every requirement to a task and an acceptance criterion. Flag unknowns, security implications, migrations, backward compatibility, and missing tests (checklist inlined in `SKILL.md`).
 6. **Save and report.** Write the plan with `status: draft`, show a short summary and the file path, and stop.
 
 ### Plan mode interaction

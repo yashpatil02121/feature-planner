@@ -25,7 +25,6 @@ Then run `/feature-planner:fp <feature>` in that session.
 | Path | What it is |
 | ---- | ---------- |
 | `plugins/feature-planner/skills/fp/SKILL.md` | The planning workflow and its hard rules |
-| `plugins/feature-planner/skills/fp/reference/` | Inspection guide and quality checklist the skill reads |
 | `plugins/feature-planner/skills/fp/templates/` | The plan template |
 | `plugins/feature-planner/evals/` | Eval cases and the shared fixture projects |
 | `docs/` | Plan, architecture findings, configuration, testing |
@@ -34,7 +33,7 @@ Then run `/feature-planner:fp <feature>` in that session.
 ## Making a change
 
 1. **Open an issue first** for anything bigger than a fix, so we can agree on the behavior.
-2. **Change the skill or template.** Keep `SKILL.md` under about 500 lines, and put detailed guidance in `reference/`.
+2. **Change the skill or template.** Keep `SKILL.md` under about 500 lines. Guidance lives in `SKILL.md` itself, so the planner doesn't spend extra reads loading it; only the templates are separate files.
 3. **Add or update an eval case** when you change behavior. Each case is a `case.yaml` plus a `scaffold.sh` that builds a fixture from `evals/_fixtures/`. Prefer deterministic graders (`tool_used`, `file_exists`, `regex`) over `llm` graders, and anchor regexes on the plan's `Write` call (see `python-migration`).
 4. **Run the checks:**
 

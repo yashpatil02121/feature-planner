@@ -61,6 +61,53 @@ The full suite ran on 2026-10-22: 9 cases, 3 runs each, with and without the plu
 - **How to read the baseline:** it receives the same text, `/feature-planner:fp …`, as an ordinary request. Some graders are specific to the plugin (the saved plan file, the template), so part of the gap is format.
 - **The most meaningful differences** are the behavioral ones: plain Claude **edited code when asked to plan**, and ignored the configuration. The two ties are cases where doing nothing also passes.
 
+## Planning efficiency (after 1.0.0)
+
+Changes made (2026-10-26):
+
+- Parallel-batch inspection instructions.
+- Search-first reading with a budget of about 15 files.
+- The inspection guide and quality checklist folded into `SKILL.md`, so only the two templates are separate files.
+
+| Measure | Before | After |
+| ------- | ------ | ----- |
+| Skill-file reads per run | 4 | 2 |
+| FastAPI fixture: project reads / tool calls (one headless run each) | 16 / 21 | 11 / 15 |
+| Round trips (Express / FastAPI) | 4 / 4 | 3 / 4 |
+| Eval average cost per run (Opus) | $0.176 (27 runs) | $0.181 (18 runs) |
+| Eval average duration per run | 36 s | 35 s |
+
+- **Claude was already batching independent reads**, so on these small fixtures the changes don't make planning faster or cheaper. The differences are within noise.
+- **The intended gain is on large repositories**, where search-first and the reading budget stop unbounded reading. The current fixtures don't exercise that, so it is unmeasured.
+- **A quality regression surfaced and was fixed.** One `rest-endpoint` plan replaced automated route tests with "verify manually with curl" and moved the tests into an open question; the judge correctly failed it. The skill now requires automated tests for every behavior-changing task, makes any enabling change (such as exporting the app) a task, and lists new test files.
+- **Template rule clarified:** test files don't count toward compact's limit of about four files. After both fixes, 18 of 18 eval runs pass.
+
+## Large-repo measurement
+
+**Fixture:** `shop-monorepo.sh` is a TypeScript/Fastify monorepo: 281 files, 13 packages, and a `CLAUDE.md` that says to reuse shared middleware.
+
+- **Noise:** 44 files in `node_modules/` and `dist/`, plus docs.
+- **What the feature needs:** the request "Rate limit password reset requests per email address" touches `packages/auth/src/routes/passwordReset.ts` and should reuse `packages/shared/src/middleware/rateLimit.ts`.
+
+**Run:** headless, 3 runs per skill version, on 2026-10-26 with the default model (Opus).
+
+| Measure (average of 3) | v1.0.0 skill | New skill |
+| ---------------------- | ------------ | --------- |
+| Round trips | 5.0 | 5.3 |
+| Tool calls | 18.0 | 18.3 |
+| Project files read (of 237) | 8.7 | 10.3 |
+| Reads of `node_modules`/`dist` | 0 | 0 |
+| Cost per plan | $0.175 | $0.191 |
+| Time | 38 s | 46 s |
+| Plan length | 44 lines | 47 lines |
+| Reused the shared limiter, no duplicate | 3/3 | 3/3 |
+
+- **Both versions already plan well at this scale.** They use Grep to find the right files, read about 4% of the project, skip the noise, and follow `CLAUDE.md`.
+- **The new instructions add no measurable efficiency on this fixture.** The differences are small and within run-to-run noise for 3 samples. The search-first rules and reading budget are guardrails rather than a speed-up: they don't bind here, because Claude already stays focused.
+- **Remaining limits:**
+  - The fixture's generated code is uniform and greps cleanly. Real repos with ambiguous names, or thousands of files, could still behave differently.
+  - The `large-repo` eval passes 3/3 in the eval harness (16–17 reads per run). Harness runs cost more (about $0.29) than headless runs, likely because each run starts with a cold cache.
+
 ## Other observations
 
 - **Workspace boundary.** One plan-mode run globbed an additional working directory from the user's settings (`D:/search-auditor`). The skill now restricts inspection to the current working directory. The rerun stayed inside the project.
